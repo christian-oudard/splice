@@ -24,7 +24,7 @@ def test_splice():
             (),
         )
     )
-    strain.splice([0], [1, 0])
+    strain.splice([0], [0, 0])
     assert_equal(
         strain.as_tuple(),
         (
@@ -34,7 +34,6 @@ def test_splice():
         )
     )
 
-def test_splice_subtree():
     strain = Strain(
         (
             (),
@@ -57,6 +56,25 @@ def test_splice_subtree():
         )
     )
 
+    strain = Strain(
+        (
+            (
+                (),
+            ),
+            (),
+        )
+    )
+    strain.splice([0], [1])
+    assert_equal(
+        strain.as_tuple(),
+        (
+            (),
+            (
+                (),
+            ),
+        )
+    )
+
 def test_splice_illegal():
     # Try to splice onto a descendant of the source node.
     strain = Strain(
@@ -67,7 +85,7 @@ def test_splice_illegal():
         )
     )
     assert_raises(
-        ValueError,
+        IndexError,
         lambda: strain.splice([0], [0, 0])
     )
 
@@ -119,5 +137,27 @@ def test_available_spots():
             [1, 0],
             [1, 0, 0],
             [1, 1],
+        ]
+    )
+
+def test_legal_moves():
+    strain = Strain(
+        (
+            (),
+            (
+                (),
+            ),
+        )
+    )
+    assert_equal(
+        sorted(move for move, s in strain.legal_moves()),
+        [
+            ([0], [1]),
+            ([0], [0, 0]),
+            ([0], [0, 1]),
+            ([0], [0, 0, 0]),
+            ([1], [0]),
+            ([1], [0, 0]),
+            ([1, 0], [0, 0]),
         ]
     )

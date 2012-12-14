@@ -6,6 +6,15 @@ class Node:
     def __getitem__(self, index):
         return self.children[index]
 
+    def iter_paths(self):
+        """
+        Generate all descendants and the paths to get to them.
+        """
+        yield [], self
+        for i, child in enumerate(self.children):
+            for subpath, descendant in child.iter_paths():
+                yield [i] + subpath, descendant
+
     def add(self, index, child):
         self.children.insert(index, child)
         child.parent = self
@@ -14,21 +23,6 @@ class Node:
         node = self.children.pop(index)
         node.parent = None
         return node
-
-    def available_spots(self):
-        if len(self.children) == 0:
-            return [[0]]
-
-        if len(self.children) == 1:
-            spots = [[0], [1]]
-        elif len(self.children) == 2:
-            spots = []
-
-        for i, child in enumerate(self.children):
-            for s in child.available_spots():
-                spots.append([i] + s)
-
-        return spots
 
     def is_legal(self):
         return (
